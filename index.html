@@ -1,1 +1,41 @@
-Hello World
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepción de Datos desde Raspberry Pi</title>
+</head>
+<body>
+    <h1>Datos desde Raspberry Pi</h1>
+    <p id="data-display">Esperando datos...</p>
+
+    <script>
+        // Función para obtener los parámetros de la URL y guardarlos como variables
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const data = {
+                codigo_barras: params.get('codigo_barras') || 'N/A',
+                estado: params.get('estado') || 'N/A',
+                fecha_ultima_compra: params.get('fecha_ultima_compra') || 'N/A',
+                fecha_ultimo_uso: params.get('fecha_ultimo_uso') || 'N/A',
+                peso: params.get('peso') || 'N/A',
+                producto: params.get('producto') || 'N/A'
+            };
+            return data;
+        }
+
+        // Función para actualizar la pantalla con los datos recibidos
+        function updateDataDisplay(data) {
+            document.getElementById("data-display").textContent = 
+                `Código de Barras: ${data.codigo_barras}, Estado: ${data.estado}, Fecha Última Compra: ${data.fecha_ultima_compra}, 
+                Fecha Último Uso: ${data.fecha_ultimo_uso}, Peso: ${data.peso} kg, Producto: ${data.producto}`;
+        }
+
+        // Obtener datos al cargar la página
+        document.addEventListener("DOMContentLoaded", () => {
+            const data = getUrlParams();
+            updateDataDisplay(data);
+        });
+    </script>
+</body>
+</html>
