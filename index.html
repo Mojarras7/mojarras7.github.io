@@ -3,39 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recepción de Datos desde Raspberry Pi</title>
+    <title>Recepción de Datos desde MongoDB</title>
 </head>
 <body>
-    <h1>Datos desde Raspberry Pi</h1>
-    <p id="data-display">Esperando datos...</p>
+    <h1>Datos de Productos</h1>
+    <div id="product-list">
+        <!-- Aquí se actualizarán los datos de los productos -->
+    </div>
 
     <script>
-        // Función para obtener los parámetros de la URL y guardarlos como variables
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            const data = {
-                codigo_barras: params.get('codigo_barras') || 'N/A',
-                estado: params.get('estado') || 'N/A',
-                fecha_ultima_compra: params.get('fecha_ultima_compra') || 'N/A',
-                fecha_ultimo_uso: params.get('fecha_ultimo_uso') || 'N/A',
-                peso: params.get('peso') || 'N/A',
-                producto: params.get('producto') || 'N/A'
-            };
-            return data;
+        // Función para obtener los datos desde la API
+        async function fetchData() {
+            try {
+                const response = await fetch('http://localhost:5000/api/productos'); // Cambia esto si tu API está en otro lugar
+                const productos = await response.json();
+
+                const productListDiv = document.getElementById("product-list");
+                productListDiv.innerHTML = ''; // Limpiar contenido anterior
+
+                // Mostrar cada producto en la página
+                productos.forEach(producto => {
+                    const productElement = document.createElement("div");
+                    productElement.innerHTML = `
+                        <p>Código de Barras: ${producto.codigo_barras}</p>
+                        <p>Estado: ${producto.estado}</p>
+                        <p>Fecha Última Compra: ${producto.fecha_ultima_compra}</p>
+                        <p>Fecha Último Uso: ${producto.fecha_ultimo_uso}</p>
+                        <p>Peso: ${producto.peso} kg</p>
+                        <p>Producto: ${producto.producto}</p>
+                        <hr>
+                    `;
+                    productListDiv.appendChild(productElement);
+                });
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+            }
         }
 
-        // Función para actualizar la pantalla con los datos recibidos
-        function updateDataDisplay(data) {
-            document.getElementById("data-display").textContent = 
-                `Código de Barras: ${data.codigo_barras}, Estado: ${data.estado}, Fecha Última Compra: ${data.fecha_ultima_compra}, 
-                Fecha Último Uso: ${data.fecha_ultimo_uso}, Peso: ${data.peso} kg, Producto: ${data.producto}`;
-        }
-
-        // Obtener datos al cargar la página
-        document.addEventListener("DOMContentLoaded", () => {
-            const data = getUrlParams();
-            updateDataDisplay(data);
-        });
+        // Cargar los datos cuando la página se haya cargado
+        window.onload = fetchData;
     </script>
 </body>
 </html>
+
