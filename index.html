@@ -3,42 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recepción de Datos desde MongoDB</title>
+    <title>Inventario Doméstico</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Datos de Productos</h1>
-    <div id="product-list">
-        <!-- Aquí se actualizarán los datos de los productos -->
+
+    <!-- Formulario de inicio de sesión -->
+    <div class="login-container" id="login-container">
+        <h2>Inicio de Sesión</h2>
+        <form id="login-form">
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" required>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" required>
+            <button type="submit">Ingresar</button>
+        </form>
+        <p id="login-error" class="error-message"></p>
+    </div>
+
+    <!-- Sección de Inventario -->
+    <div class="inventory-container" id="inventory-container" style="display: none;">
+        <h1>Inventario Doméstico</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Categoría</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Arroz</td>
+                    <td>2 kg</td>
+                    <td>Alimentos</td>
+                </tr>
+                <tr>
+                    <td>Detergente</td>
+                    <td>1 botella</td>
+                    <td>Limpieza</td>
+                </tr>
+                <!-- Agregar más productos aquí -->
+            </tbody>
+        </table>
+        <button id="send-number-btn">Enviar número</button>
+        <p id="number-output"></p>
     </div>
 
     <script>
-        // Función para obtener los datos desde la API
-        async function fetchData() {
-            try {
-                const response = await fetch('http://localhost:5000/api/productos'); // Cambia esto si tu API está en otro lugar
-                const productos = await response.json();
+        // Script de verificación de usuario
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('login-error');
 
-                const productListDiv = document.getElementById("product-list");
-                productListDiv.innerHTML = ''; // Limpiar contenido anterior
-
-                // Mostrar cada producto en la página
-                productos.forEach(producto => {
-                    const productElement = document.createElement("div");
-                    productElement.innerHTML = `
-                        <p>Código de Barras: ${producto.codigo_barras}</p>
-                        <p>Estado: ${producto.estado}</p>
-                        <p>Fecha Última Compra: ${producto.fecha_ultima_compra}</p>
-                        <p>Fecha Último Uso: ${producto.fecha_ultimo_uso}</p>
-                        <p>Peso: ${producto.peso} kg</p>
-                        <p>Producto: ${producto.producto}</p>
-                        <hr>
-                    `;
-                    productListDiv.appendChild(productElement);
-                });
-            } catch (error) {
-                console.error('Error al obtener los datos:', error);
+            // Validación básica
+            if (username === "admin" && password === "1234") {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('inventory-container').style.display = 'block';
+            } else {
+                errorMessage.textContent = "Usuario o contraseña incorrectos";
             }
-        }
+        });
+
+        // Script para el botón que envía un número
+        document.getElementById('send-number-btn').addEventListener('click', function() {
+            const number = Math.floor(Math.random() * 100);
+            document.getElementById('number-output').textContent = "Número enviado: " + number;
+            // Aquí se podría añadir una petición a un servidor para enviar el número
+        });
+    </script>
+
+</body>
+</html>
+
 
         // Cargar los datos cuando la página se haya cargado
         window.onload = fetchData;
