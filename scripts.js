@@ -19,6 +19,7 @@ document.getElementById('send-number-btn').addEventListener('click', function() 
     document.getElementById('number-output').textContent = "Número enviado: " + number;
 });
 
+//modo lectura
 async function activarModoLectura() {
     const url = "http://<IP_Raspberry_Pi>:5000/activar_lectura"; // Cambia <IP_Raspberry_Pi>
     const data = { activar: true };
