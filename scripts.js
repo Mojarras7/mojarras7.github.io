@@ -49,5 +49,34 @@ document.addEventListener('DOMContentLoaded', function() {
             alert("Error de conexión: " + error.message);  // Si hay un error en la conexión
         }
     }
+
+    document.getElementById('send-number-btn').addEventListener('click', async function() {
+        const numero = Math.floor(Math.random() * 100);  // Generar un número aleatorio entre 0 y 99
+        document.getElementById('number-output').textContent = "Número enviado: " + numero;
+    
+        const url = "http://10.43.126.172:5000/enviar_numero";  // Dirección de tu Raspberry Pi
+    
+        const data = { numero: numero };  // Datos que vamos a enviar
+    
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+    
+            const result = await response.json();  // Convertir la respuesta en formato JSON
+            if (response.ok) {
+                alert(result.message);  // Mostrar mensaje de éxito
+            } else {
+                alert("Error: " + result.message);  // Mostrar mensaje de error
+            }
+        } catch (error) {
+            alert("Error de conexión: " + error.message);  // Si hay error de conexión
+        }
+    });
+    
     
 });
