@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario Doméstico</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js"></script>
 </head>
 <body>
 
@@ -54,35 +55,7 @@
 
     </div>
 
-    <script>
-        // Script de verificación de usuario
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('login-error');
-
-            // Validación básica
-            if (username === "admin" && password === "1234") {
-                document.getElementById('login-container').style.display = 'none';
-                document.getElementById('inventory-container').style.display = 'block';
-            } else {
-                errorMessage.textContent = "Usuario o contraseña incorrectos";
-            }
-        });
-
-        // Script para el botón que envía un número
-        document.getElementById('send-number-btn').addEventListener('click', function() {
-            const number = "Borrar";
-            document.getElementById('number-output').textContent = "Número enviado: " + number;
-            // Aquí se podría añadir una petición a un servidor para enviar el número
-        });
-    </script>
-
 </body>
 </html>
 
-    </script>
-</body>
-</html>
 
