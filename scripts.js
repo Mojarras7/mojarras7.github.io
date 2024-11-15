@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function activarModoLectura() {
-        const url = "http://127.0.0.1:5000/activar_lectura"; // Cambia <IP_Raspberry_Pi>
+        const url = "http://10.43.126.172:5000/activar_lectura"; // Cambia <IP_Raspberry_Pi>
         const data = { activar: true };
 
         try {
