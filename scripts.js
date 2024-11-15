@@ -26,9 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function activarModoLectura() {
-        const url = "http://10.43.126.172:5000/activar_lectura"; // Cambia <IP_Raspberry_Pi>
-        const data = { activar: true };
-
+        const url = "http://10.43.126.172:5000/activar_lectura"; // Dirección IP de tu Raspberry Pi
+    
+        const data = { activar: true }; // Datos que vamos a enviar
+    
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -37,15 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(data)
             });
-
-            const result = await response.json();
+    
+            const result = await response.json();  // Convertimos la respuesta en formato JSON
             if (response.ok) {
-                alert(result.message);
+                alert(result.message);  // Mostramos el mensaje de éxito
             } else {
-                alert("Error: " + result.message);
+                alert("Error: " + result.message);  // En caso de error, mostramos el mensaje de error
             }
         } catch (error) {
-            alert("Error de conexión: " + error.message);
+            alert("Error de conexión: " + error.message);  // Si hay un error en la conexión
         }
     }
+    
 });
