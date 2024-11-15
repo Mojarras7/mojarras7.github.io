@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // APEX API Base URL
     const APEX_HOST = "apex.oracle.com";
-    const BASE_PATH = "https://apex.oracle.com/pls/apex/iot_project/api/products/api/products/getStatus";
+    const BASE_PATH = "https://apex.oracle.com/pls/apex/iot_project/api/products/api/products";
 
     // Evento de inicio de sesión
     if (loginForm) {
