@@ -7,51 +7,24 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <!-- Formulario de inicio de sesión -->
-    <div class="login-container" id="login-container">
-        <h2>Inicio de Sesión</h2>
-        <form id="login-form">
-            <label for="username">Usuario:</label>
-            <input type="text" id="username" required>
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" required>
-            <button type="submit">Ingresar</button>
-        </form>
-        <p id="login-error" class="error-message"></p>
+    <div class="welcome-container">
+        <div class="left-panel">
+            <h1>Inventario Doméstico</h1>
+        </div>
+        <div class="right-panel">
+            <div class="login-container">
+                <h2>Inicio de Sesión</h2>
+                <form id="login-form">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" required>
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" required>
+                    <button type="submit">Ingresar</button>
+                </form>
+                <p id="login-error" class="error-message"></p>
+            </div>
+        </div>
     </div>
-
-    <!-- Sección de Inventario -->
-    <div class="inventory-container" id="inventory-container" style="display: none;">
-        <h1>Inventario Doméstico</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Categoría</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Arroz</td>
-                    <td>2 kg</td>
-                    <td>Alimentos</td>
-                </tr>
-                <tr>
-                    <td>Detergente</td>
-                    <td>1 botella</td>
-                    <td>Limpieza</td>
-                </tr>
-                <!-- Agregar más productos aquí -->
-            </tbody>
-        </table>
-        <button id="send-number-btn">Enviar número</button>
-        <button id="activate-mode-btn" onclick= activarModoLectura() style="display: none;">Activar Modo Lectura</button>
-        <p id="number-output"></p>
-    </div>
-
     <script src="scripts.js" defer></script>
-
 </body>
 </html>

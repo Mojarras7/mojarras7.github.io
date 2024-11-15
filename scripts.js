@@ -1,77 +1,150 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Elementos de las páginas
     const loginForm = document.getElementById('login-form');
-    const loginContainer = document.getElementById('login-container');
-    const inventoryContainer = document.getElementById('inventory-container');
     const loginError = document.getElementById('login-error');
-    const activateModeBtn = document.getElementById('activate-mode-btn'); // Botón de activar modo
+    const sendNumberBtn = document.getElementById('send-number-btn');
+    const activateModeBtn = document.getElementById('activate-mode-btn');
+    const numberOutput = document.getElementById('number-output');
+    const modeStatusOutput = document.getElementById('mode-status-output');
+    const inventorySelectBtn = document.getElementById('inventory-select-btn');
+    const loadInventoryBtn = document.getElementById('load-inventory-btn');
+    const inventoryList = document.getElementById('inventory-table-body'); // Cambié aquí
 
-    // Evento para el formulario de inicio de sesión
-    loginForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+    // APEX API Base URL
+    const APEX_HOST = "apex.oracle.com";
+    const BASE_PATH = "https://apex.oracle.com/pls/apex/iot_project/api/products/api/products/getStatus";
 
-        // Validación básica
-        if (username === "admin" && password === "1234") {
-            loginContainer.style.display = 'none';
-            inventoryContainer.style.display = 'block';
-            activateModeBtn.style.display = 'inline-block'; // Mostrar el botón
-        } else {
-            loginError.textContent = "Usuario o contraseña incorrectos";
-        }
-    });
+    // Evento de inicio de sesión
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevenir el envío del formulario
 
-    // Evento para el botón "Enviar número"
-    document.getElementById('send-number-btn').addEventListener('click', async function() {
-        const numero = Math.floor(Math.random() * 100);  // Generar un número aleatorio entre 0 y 99
-        document.getElementById('number-output').textContent = "Número enviado: " + numero;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-        const url = "http://10.43.126.172:5000/enviar_numero";  // Dirección de tu Raspberry Pi
-
-        const data = { numero: numero };  // Datos que vamos a enviar
-
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();  // Convertir la respuesta en formato JSON
-            if (response.ok) {
-                alert(result.message);  // Mostrar mensaje de éxito
+            // Validación de las credenciales
+            if (username === "admin" && password === "1234") {
+                // Si las credenciales son correctas, redirige a la página de selección de inventario
+                window.location.href = "inventory-select.html";
             } else {
-                alert("Error: " + result.message);  // Mostrar mensaje de error
+                // Si las credenciales son incorrectas, muestra un mensaje de error
+                loginError.textContent = "Usuario o contraseña incorrectos";
             }
-        } catch (error) {
-            alert("Error de conexión: " + error.message);  // Si hay error de conexión
-        }
-    });
-
-    // Función para activar el modo de lectura (opcional en esta etapa)
-    async function activarModoLectura() {
-        const url = "http://10.43.126.172:5000/activar_lectura";  // Dirección de tu Raspberry Pi
-        const data = { activar: true };
-
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();  // Convertir la respuesta en formato JSON
-            if (response.ok) {
-                alert(result.message);  // Mostrar mensaje de éxito
-            } else {
-                alert("Error: " + result.message);  // Mostrar mensaje de error
-            }
-        } catch (error) {
-            alert("Error de conexión: " + error.message);  // Si hay error de conexión
-        }
+        });
     }
+
+    // Evento de enviar número a la Raspberry Pi (si existe el botón)
+    if (sendNumberBtn) {
+        sendNumberBtn.addEventListener('click', async function() {
+            const numberToSend = "123"; // Número de ejemplo
+            numberOutput.textContent = `Número enviado: ${numberToSend}`;
+
+            try {
+                const response = await fetch("http://192.168.112.143:5000/enviar_numero", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ numero: numberToSend })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    numberOutput.textContent += ` | Número recibido: ${result.numero}`;
+                } else {
+                    numberOutput.textContent = "Error al recibir el número";
+                }
+            } catch (error) {
+                numberOutput.textContent = "Error de conexión";
+            }
+        });
+    }
+
+    // Activar modo lectura (si existe el botón)
+    if (activateModeBtn) {
+        activateModeBtn.addEventListener('click', async function() {
+            try {
+                const response = await fetch("http://192.168.112.143:5000/activar_lectura", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ activar: true })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    modeStatusOutput.textContent = `Modo Lectura: ${result.message}`;
+                } else {
+                    modeStatusOutput.textContent = `Error: ${result.message}`;
+                }
+            } catch (error) {
+                modeStatusOutput.textContent = "Error de conexión";
+            }
+        });
+    }
+
+    // Evento para seleccionar inventario (si existe el botón)
+    if (inventorySelectBtn) {
+        inventorySelectBtn.addEventListener('click', function() {
+            window.location.href = "inventory.html"; // Redirigir a la página de inventario
+        });
+    }
+
+    // Evento para cargar los datos del inventario desde la base de datos de APEX
+    if (loadInventoryBtn) {
+        loadInventoryBtn.addEventListener('click', async function() {
+            try {
+                // Construir la URL completa de la API de APEX
+                const apiUrl = `https://apex.oracle.com/pls/apex/iot_project/api/products/getStatus`;
+
+                const response = await fetch(apiUrl, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+
+                const data = await response.json();
+                console.log(data); // Para revisar la respuesta en consola
+
+                if (response.ok) {
+                    // Limpiar el contenedor antes de agregar nuevos elementos
+                    inventoryList.innerHTML = "";
+
+                    // Verificar si los productos fueron devueltos y agregarlos a la tabla
+                    if (data.length > 0) {
+                        data.forEach(product => {
+                            const row = document.createElement("tr");
+
+                            const productCell = document.createElement("td");
+                            productCell.textContent = product.nombre; // Nombre del producto
+                            row.appendChild(productCell);
+
+                            const quantityCell = document.createElement("td");
+                            quantityCell.textContent = product.cantidad; // Cantidad del producto
+                            row.appendChild(quantityCell);
+
+                            const categoryCell = document.createElement("td");
+                            categoryCell.textContent = product.categoria; // Categoría del producto
+                            row.appendChild(categoryCell);
+
+                            // Agregar la fila a la tabla
+                            inventoryList.appendChild(row);
+                        });
+                    } else {
+                        inventoryList.innerHTML = "<tr><td colspan='3'>No hay productos disponibles</td></tr>";
+                    }
+                } else {
+                    inventoryList.innerHTML = "<tr><td colspan='3'>Error al cargar el inventario</td></tr>";
+                }
+            } catch (error) {
+                inventoryList.innerHTML = "<tr><td colspan='3'>Error de conexión</td></tr>";
+            }
+        });
+    }
+
 });
