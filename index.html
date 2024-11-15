@@ -49,6 +49,10 @@
         <button id="send-number-btn">Enviar número</button>
         <p id="number-output"></p>
     </div>
+    <div>
+        <button onclick="activarModoLectura()">Activar Modo Lectura</button>
+
+    </div>
 
     <script>
         // Script de verificación de usuario
@@ -69,7 +73,7 @@
 
         // Script para el botón que envía un número
         document.getElementById('send-number-btn').addEventListener('click', function() {
-            const number = Math.floor(Math.random() * 100);
+            const number = "Borrar";
             document.getElementById('number-output').textContent = "Número enviado: " + number;
             // Aquí se podría añadir una petición a un servidor para enviar el número
         });
